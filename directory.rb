@@ -32,6 +32,7 @@ def print_menu
   puts "Menu. Choose a number" # display menu options
   puts "1. Input students"
   puts "2. Display students"
+  puts "3. Save the list to students.csv"
   puts "9. Exit"
 end
 
@@ -49,6 +50,8 @@ def process(selection)
     input_students
   when "2"
     show_students
+  when "3"
+    save_data
   when "9"
     exit # terminate program
   else
@@ -62,6 +65,18 @@ def interactive_menu
     print_menu
     process(gets.chomp) # get user input
   end
+end
+
+# define a method which saves our data into an external file
+def save_data
+  file = File.open("students.csv", "w") # open the file where the data will be exported to
+  # iterate over array of students to put data as string in file
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort]]
+    csv_line = student_data.join(", ")
+    file.puts csv_line
+  end
+  file.close
 end
 
 # start the program
