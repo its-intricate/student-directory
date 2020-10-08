@@ -33,6 +33,7 @@ def print_menu
   puts "1. Input students"
   puts "2. Display students"
   puts "3. Save the list to students.csv"
+  puts "4. Load the list from students.csv"
   puts "9. Exit"
 end
 
@@ -52,6 +53,8 @@ def process(selection)
     show_students
   when "3"
     save_data
+  when "4"
+    load_data
   when "9"
     exit # terminate program
   else
@@ -69,12 +72,24 @@ end
 
 # define a method which saves our data into an external file
 def save_data
-  file = File.open("students.csv", "w") # open the file where the data will be exported to
+  # open the file where the data will be exported to
+  file = File.open("students.csv", "w") # "w" - write; "r" - read
   # iterate over array of students to put data as string in file
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
     csv_line = student_data.join(", ")
     file.puts csv_line
+  end
+  file.close
+end
+
+# define a method which loads our data from an existing file
+def load_data
+  # open the file where the data will be imported from
+  file = File.open("students.csv", "r") # "w" - write; "r" - read
+  file.readlines.each do |line|
+    name, cohort = line.chomp.split(", ")
+    @students << {name: name, cohort: cohort.to_sym}
   end
   file.close
 end
