@@ -4,11 +4,11 @@
 def input_students
   puts "Please enter the names of the students."
   puts "To finish, press Return twice."
-  name = gets.chomp
+  name = STDIN.gets.chomp
   while !name.empty? do # continue to collect names until return is hit twice
     @students << {name: name, cohort: :november} # add input to student array
     puts "There are now #{@students.count} students." # display number of students so far
-    name = gets.chomp # ask for another name
+    name = STDIN.gets.chomp # ask for another name
   end
 end
 
@@ -66,7 +66,7 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp) # get user input
+    process(STDIN.gets.chomp) # get user input
   end
 end
 
@@ -84,9 +84,9 @@ def save_data
 end
 
 # define a method which loads our data from an existing file
-def load_data
+def load_data (filename = "students.csv") # uses students.csv as a default value if no argument is passed
   # open the file where the data will be imported from
-  file = File.open("students.csv", "r") # "w" - write; "r" - read
+  file = File.open(filename, "r") # "w" - write; "r" - read
   file.readlines.each do |line|
     name, cohort = line.chomp.split(", ")
     @students << {name: name, cohort: cohort.to_sym}
@@ -94,5 +94,19 @@ def load_data
   file.close
 end
 
+# define a method which loads our data (on start up) from a file given as a command line argument
+def try_load_data
+  filename = ARGV.first # first argument from command line
+  return if filename.nil?
+  if File.exists?(filename) # executed if file exists
+    load_data(filename)
+    puts "Loaded #{@students.count} students from #{filename}."
+  else # executed if file doesn't exist
+    puts "Sorry #{filename} doesn't exist."
+    exit
+  end
+end
+
 # start the program
+try_load_data
 interactive_menu
